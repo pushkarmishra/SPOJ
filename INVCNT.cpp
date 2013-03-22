@@ -1,6 +1,6 @@
 /*
 Algorithm: Binary Indexed Tree
-Complexity: O(n*Longn)
+Complexity: O(n*Log n)
 */
 #include <iostream>
 #include <algorithm>
