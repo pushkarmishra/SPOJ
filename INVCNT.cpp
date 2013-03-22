@@ -1,3 +1,7 @@
+/*
+Algorithm: Binary Indexed Tree
+Complexity: O(n*Longn)
+*/
 #include <iostream>
 #include <algorithm>
 #include <vector>
