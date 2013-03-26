@@ -1,3 +1,8 @@
+{
+Algo: Binary Indexed Tree
+Complexity: N*LogN
+}
+
 program INCSEQ;
 var
     bitdp: Array[1..51, 1..131073] of longint;
