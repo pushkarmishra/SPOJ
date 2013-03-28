@@ -2,6 +2,7 @@
 Algo: Binary Indexed Tree
 Complexity: N*LogN
 */
+
 #include <iostream>
 #include <cstring>
 using namespace std;
