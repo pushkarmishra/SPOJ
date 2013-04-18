@@ -1,3 +1,8 @@
+/*
+Algo: Segment Tree
+Complexity: N*LogN
+*/
+
 #include <cstdio>
 #include <algorithm>
 using namespace std;
