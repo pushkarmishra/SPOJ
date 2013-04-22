@@ -1,52 +1,55 @@
 /*
-Algo: Binary Indexed Tree
+Algo: Segment Tree
 Complexity: N*LogN
 */
 
-#include <iostream>
+#include <cstdio>
 #include <cstring>
 using namespace std;
-#define MAX 100200
 
-static long long tree[MAX+1][2];
-inline void update(int idx, long long val){
-    for (int p=idx; p<=MAX; p+=(p & -p)){
-        tree[p][0]+=val*(p-idx+1);
-        tree[p][1]+=val;
+struct segtree{long long sum, v;} st[500004];
+static long long A[100010], ANS, V;
+int qs, qe, N, Q, T, in;
+
+inline void update(int x, int y, int n){
+    if (y<qs || qe<x) return;
+    if (qs<=x && y<=qe){
+        st[n].sum+=(V*(y-x+1));
+        st[n].v+=V; return;
     }
+    int mid=(x+y)>>1;
+    update(x, mid, 2*n+1); update(mid+1, y, 2*n+2);
+    st[n].sum=st[2*n+1].sum+st[2*n+2].sum + st[n].v*(y-x+1);
 }
 
-inline long long sum(int idx){
-    long long res=0;
-    for (int p=idx; p>0; p-=(p & -p)){
-        res+=tree[p][0];
-        res+=tree[p][1]*(idx-p);
+void query(int x, int y, int n, long long v){
+    if (y<qs || qe<x) return;
+    if (qs<=x && y<=qe){
+        ANS+= ((v)*(y-x+1) + st[n].sum); return;
     }
-    return res;
+    int mid=(x+y)>>1;
+    query(x, mid, 2*n+1, v+st[n].v);
+    query(mid+1, y, 2*n+2, v+st[n].v);
 }
 
 int main()
 {
-    ios::sync_with_stdio(0);
-    
-    int T, in, p, q; long v; cin >> T;
+    scanf("%d", &T);
     while(T--){
-        memset(tree, 0, sizeof(tree));
-        int N, C;
-        cin >> N >> C;
+        scanf("%d %d", &N, &Q);
+        memset(st, 0, sizeof st);
         
-        for (int i=1; i<=C; i++){
-            cin >> in;
-            if (in==0){
-                cin >> p >> q >> v;
-                update(p, v); update(q+1, -v);
+        while(Q--){
+            scanf("%d %d %d", &in, &qs, &qe);
+            if(in){
+                ANS=0; query(1, N, 1, 0);
+                printf("%lld\n", ANS);
             }
-            else if (in){
-                cin >> p >> q;
-                cout << sum(q)-sum(p-1) << '\n';
+            else{
+                scanf("%lld", &V);
+                update(1, N, 1);
             }
         }
     }
-    
     return 0;
 }
