@@ -1,45 +1,65 @@
 /*
-Algo: Binary Search Tree
-Complexity: N*LogN
+Algo: Mergesort Tree and Binary Indexed Tree
+Complexity: N*LogN*LogN
 */
 
+#include <vector>
 #include <cstdio>
-
-int idx=0, t=1, N; static long long ANS[100010], V;
-struct node{long long v; int ls, rs, i, s; node* l; node* r;};
-int p;
-
-inline node* bstin(node *n){
-    if (n==NULL){
-        n = new node; n->i=t; n->ls=0;
-        n->l=NULL; n->r=NULL; n->v=V;
-        n->rs=-idx; return n;
+using namespace std;
+ 
+struct s{long long v; int i;} A[100010], B[100010];
+int N, s, e; long long C[100010];
+ 
+inline void update(vector<int> &p, int i){
+    for(; i<p.size(); i+=(i&-i))p[i]++;
+}
+inline int query(vector<int> &p, int i){
+    int ans=0;
+    for(; i>0; i-=(i&-i))ans+=p[i];
+    return ans;
+}
+inline void merge(int i, int m, int k){
+    vector<int> q(m-i+3);
+    for (int j=m+1; j<=k; ++j){
+        int s=i, e=m;
+        while(s<=e){
+            int m=(s+e)>>1;
+            if(query(q, m-i+1)+A[m].v>=C[j])e=m-1;
+            else s=m+1;
+        }
+        update(q, s-i+1);
     }
-    else if((n->v)+(n->ls)+(n->rs)+idx >= V){
-        (n->ls)+=1; p=(n->i); n->l=bstin(n->l);
+    int t=m+1, l=i, p=i;
+    while(i<=m && t<=k){
+        if(A[i].v+query(q, i-p+1)<A[t].v){
+            A[i].v+=query(q, i-p+1);
+            B[l++]=A[i++];
+        }
+        else B[l++]=A[t++];
     }
-    else{
-        idx+=(n->ls)+1; p=(n->i); n->r=bstin(n->r);
+    while(i<=m){
+        A[i].v+=query(q, i-p+1); B[l++]=A[i++];
+    }
+    while(t<=k) B[l++]=A[t++];
+    for(; p<=k; ++p)A[p]=B[p];
+}
+void divsol(int i, int j){
+    if (i < j){
+       int mid = (i+j)>>1;
+       divsol(i, mid); divsol(mid+1, j);
+       merge(i, mid, j);
     }
 }
-inline node* query(node *&n){
-    if (n->l!=NULL) return query(n->l);
-    if(n->r!=NULL) {idx+=(n->ls)+1; return query(n->r);}
-    ANS[n->i]= n->ls+n->v+n->rs+idx;
-    n=NULL; return n;
-}
-
+ 
 int main()
 {
-    scanf("%d%lld", &N, &V);
-    node *root=NULL;
-    root = bstin(root);
-    for(int i=2; i<=N; ++i){
-        scanf("%lld", &V); t=i;
-        idx=0; bstin(root);
+    scanf("%d", &N);
+    for (int i=1; i<=N; ++i){
+        scanf("%lld", &A[i].v);
+        C[i]=A[i].v; A[i].i=i;
     }
-
-    for (int i=1; i<=N; ++i) {idx=0; query(root);}
-    for (int i=1; i<=N; ++i) printf("%lld ", ANS[i]);
+    divsol(1, N);
+    for (int i=1; i<=N; ++i) C[A[i].i]=A[i].v;
+    for (int i=1; i<=N; ++i) printf("%lld ", C[i]);
     return 0;
 }
