@@ -4,7 +4,7 @@ Complexity: N*LogN
 */
 
 /*
-The problem requires you to find K subsegments such that the sum is minimized.
+The problem requires you to find K subsegments such that their sum is minimized.
 This can be done by finding the minimum sum subsegment and flipping it.
 Then again finding the minimum sum subsegment and flipping it.
 This has to be done K times.
